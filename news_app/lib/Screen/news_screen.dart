@@ -37,7 +37,7 @@ class _NewsScreenState extends State<NewsScreen> {
     initNews();
     return Scaffold(
       appBar: AppBar(
-        title: Text('배준호의 8시 뉴스'),
+        title: Text('뉴스'),
       ),
       body: isLoading ? Center(child: const CircularProgressIndicator(),) : 
       GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
