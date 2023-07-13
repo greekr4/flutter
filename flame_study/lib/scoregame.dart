@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/components.dart';
@@ -22,7 +23,8 @@ class ScoreBoard extends PositionComponent {
         color: Colors.amber,
       ),
     );
-    painter.layout(maxWidth: 100);
-    painter.paint(canvas, new Offset(160, 80));
+
+    painter.layout(minWidth: 400);
+    painter.paint(canvas, new Offset(0, 50));
   }
 }

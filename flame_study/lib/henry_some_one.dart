@@ -1,3 +1,6 @@
+import 'dart:async';
+
+
 import 'package:flame/collisions.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -12,6 +15,11 @@ import 'package:flame_study/test.dart';
 
 import 'package:flutter/material.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+
+final ScoreBoard scoreboard = new ScoreBoard(0);
+int score = 0;
+int plusscore = 0;
+int tabvalue = 1;
 
 class HenrySomeOneGame extends StatefulWidget {
   const HenrySomeOneGame({Key ? key}) : super(key:key);
@@ -54,16 +62,24 @@ class _HenrySomeOneGameState extends State<HenrySomeOneGame> {
   void onTapItem(int index){
     debugPrint(index.toString());
     if(list.contains(index)) return;
-    list.add(index);
-    setState(() {});
+
+    if(scoreboard.score >= 10){
+      list.add(index);
+      score = score - 10;
+      plusscore++;
+      tabvalue++;
+      scoreboard.score = score;
+      setState(() {});
+    }
+
+
   }
 
 }
 
 class MyStaticGame extends FlameGame with HasCollisionDetection,TapCallbacks    {
+  Timer? _timer;
 
-  int score = 0;
-  ScoreBoard scoreboard = new ScoreBoard(0);
   List<int> list;
   MyStaticGame({required this.list});
 
@@ -92,6 +108,15 @@ class MyStaticGame extends FlameGame with HasCollisionDetection,TapCallbacks    
     //플레이어 input
     add(AnimatedPlayer(playerPosition, playerSize));
     add(scoreboard);
+
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) =>
+    {
+      score = score + plusscore,
+      scoreboard.score = score,
+      print(plusscore),
+      print('score:  $score')
+    }
+    );
   }
 
   @override
@@ -104,9 +129,13 @@ class MyStaticGame extends FlameGame with HasCollisionDetection,TapCallbacks    
 
   @override
   void onTapUp(TapUpEvent event) {
-    score++;
+    score = score + tabvalue;
     scoreboard.score = score;
-    print('z');
+
+
+
+    }
+
 
 
 
@@ -116,4 +145,3 @@ class MyStaticGame extends FlameGame with HasCollisionDetection,TapCallbacks    
 
 
   
-}
