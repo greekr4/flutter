@@ -1,5 +1,3 @@
-
-
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 
@@ -14,5 +12,4 @@ class GameBackGround extends SpriteComponent with HasGameRef {
     final gameSize = gameRef.size;
     size = Vector2(gameSize.x, gameSize.y);
   }
-
 }
