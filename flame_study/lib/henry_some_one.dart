@@ -22,7 +22,7 @@ final Skill skillboard = new Skill(0);
 int score = 0;
 int plusscore = 0;
 int tabvalue = 1;
-double playerType = 7;
+double playerType = 3;
 //플레이어 사이즈
 final playerSize = Vector2(150, 100);
 //플레이어 위치
@@ -129,9 +129,7 @@ class MyStaticGame extends FlameGame with HasCollisionDetection, TapCallbacks {
   }
 
   @override
-  void onTapUp(TapUpEvent event) {
-    skillboard.isButtonPressed = false;
-  }
+  void onTapUp(TapUpEvent event) {}
 
   @override
   void onTapDown(TapDownEvent event) {
@@ -146,11 +144,12 @@ class MyStaticGame extends FlameGame with HasCollisionDetection, TapCallbacks {
         player.onLoad();
         add(player2);
 
-        _timer = Timer(Duration(seconds: 2), () {
+        _timer = Timer(Duration(seconds: 1), () {
           if (player2.isMounted) {
             player.option = 3;
             player.onLoad();
             remove(player2);
+            skillboard.isButtonPressed = false;
           }
         });
       }

@@ -17,7 +17,7 @@ class ScoreBoard extends PositionComponent {
       textDirection: TextDirection.ltr,
     );
     painter.text = TextSpan(
-      text: '$score점',
+      text: '$score',
       style: TextStyle(
         fontSize: 36.0,
         color: Colors.amber,
@@ -25,6 +25,6 @@ class ScoreBoard extends PositionComponent {
     );
 
     painter.layout(minWidth: 400);
-    painter.paint(canvas, new Offset(0, 50));
+    painter.paint(canvas, new Offset(0, 60));
   }
 }
