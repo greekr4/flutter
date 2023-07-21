@@ -152,6 +152,7 @@ class MyStaticGame extends FlameGame with HasCollisionDetection, TapCallbacks {
             skillboard.isButtonPressed = false;
           }
         });
+        _timer = Timer(Duration(seconds: 1), () {});
       }
     }
   }

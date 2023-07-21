@@ -18,7 +18,7 @@ class Player extends SpriteAnimationComponent
     animation = SpriteAnimation.fromFrameData(
       image,
       SpriteAnimationData.sequenced(
-          amount: 4, stepTime: 0.10, textureSize: Vector2.all(16)),
+          amount: 4, stepTime: 0.10, textureSize: Vector2.all(128)),
     );
   }
 
@@ -72,13 +72,15 @@ class Player extends SpriteAnimationComponent
     add(effect);
   }
 
-  void reset() {
+  void die() {
     final effect = MoveByEffect(
-        Vector2(50, -50),
+        Vector2(0, 200),
         EffectController(
-          duration: 0.5,
+          duration: 1,
           curve: Curves.decelerate,
         ));
     add(effect);
   }
+
+  void reset() {}
 }

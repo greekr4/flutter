@@ -12,7 +12,7 @@ class BoxStack extends PositionComponent with HasGameRef<FlappyEmber> {
   final bool isBottom;
   static final random = Random();
 
-  BoxStack({required this.isBottom});
+  BoxStack({required this.isBottom}) : super(priority: 0);
 
   @override
   Future<void>? onLoad() async {
