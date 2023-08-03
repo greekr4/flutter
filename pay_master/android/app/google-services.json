@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "18767244360",
+    "project_id": "pay-master-fea0a",
+    "storage_bucket": "pay-master-fea0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:18767244360:android:28eb6e84c93b930d40bc7d",
+        "android_client_info": {
+          "package_name": "com.example.pay_master"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "18767244360-5j0mi7c3c314crono2428sqh5rads3k6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyDGVtJxWVeA00RgQXqcG4qXO7lQpNJw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "18767244360-5j0mi7c3c314crono2428sqh5rads3k6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "18767244360-id4a6vmgmpnpgi7nsi8alcacvpd1id5j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.paymaster.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
