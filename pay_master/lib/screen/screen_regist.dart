@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newflutter/models/model_auth.dart';
-import 'package:newflutter/models/model_register.dart';
+import 'package:pay_master/models/model_auth.dart';
+import 'package:pay_master/models/model_register.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -9,15 +10,15 @@ class RegisterScreen extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => RegisterModel(),
       child: Scaffold(
-        appBar: AppBar(),
-        body: Column(
-          children: [
-            EmailInput(),
-            PasswordInput(),
-            PasswordConfirmInput(),
-            RegistButton()
-          ],
+        appBar: AppBar(
+          title: Text('회원가입'),
         ),
+        body: Column(children: [
+          EmailInput(),
+          PasswordInput(),
+          PasswordComfirmInput(),
+          RegistButton(),
+        ]),
       ),
     );
   }
@@ -34,10 +35,7 @@ class EmailInput extends StatelessWidget {
           register.setEmail(email);
         },
         keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-          labelText: 'email',
-          helperText: '',
-        ),
+        decoration: InputDecoration(labelText: '이메일', helperText: ''),
       ),
     );
   }
@@ -46,7 +44,7 @@ class EmailInput extends StatelessWidget {
 class PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final register = Provider.of<RegisterModel>(context);
+    final register = Provider.of<RegisterModel>(context, listen: false);
     return Container(
       padding: EdgeInsets.all(5),
       child: TextField(
@@ -55,21 +53,18 @@ class PasswordInput extends StatelessWidget {
         },
         obscureText: true,
         decoration: InputDecoration(
-          labelText: 'password',
+          labelText: '비밀번호',
           helperText: '',
-          errorText: register.password != register.passwordConfirm
-              ? 'Password incorrect'
-              : null,
         ),
       ),
     );
   }
 }
 
-class PasswordConfirmInput extends StatelessWidget {
+class PasswordComfirmInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final register = Provider.of<RegisterModel>(context, listen: false);
+    final register = Provider.of<RegisterModel>(context);
     return Container(
       padding: EdgeInsets.all(5),
       child: TextField(
@@ -78,57 +73,22 @@ class PasswordConfirmInput extends StatelessWidget {
         },
         obscureText: true,
         decoration: InputDecoration(
-          labelText: 'password confirm',
+          labelText: '비밀번호 확인',
           helperText: '',
+          errorText: register.password != register.passwordConfirm
+              ? '비밀번호가 틀립니다.'
+              : null,
         ),
       ),
     );
   }
 }
 
-// class RegistButton extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     final authClient = Provider.of<FirebaseAuthProvider>(context,listen: false);
-//     final register = Provider.of<RegisterModel>(context,listen: false);
-//     return Container(
-//       width: MediaQuery.of(context).size.width * 0.7,
-//       height: MediaQuery.of(context).size.height * 0.05,
-//       child: ElevatedButton(
-//         style: ElevatedButton.styleFrom(
-//           shape: RoundedRectangleBorder(
-//             borderRadius: BorderRadius.circular(30.0),
-//           ),
-//         ),
-//         onPressed: (register.password != register.passwordConfirm) ? null : () async {
-//           await authClient.registerWithEmail(register.email, register.password)
-//           .then((registerStatus) {
-//             if (registerStatus == AuthStatus.registerSuccess) {
-//               ScaffoldMessenger.of(context)
-//                 ..hideCurrentSnackBar()
-//                 ..showSnackBar(
-//                     SnackBar(content: Text('Regist Success!!')),);
-//               Navigator.pop(context);
-//             }else {
-//               ScaffoldMessenger.of(context)
-//                   ..hideCurrentSnackBar()
-//                   ..showSnackBar(
-//                       SnackBar(content: Text('Regist Fail')));
-//             }
-//           });
-//
-//
-//         },
-//         child: Text('Regist'),
-//       ),
-//     );
-//   }
-// }
-
 class RegistButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final authClient = Provider.of<FirebaseAuthProvider>(context);
+    final authClient =
+        Provider.of<FirebaseAuthProvider>(context, listen: false);
     final register = Provider.of<RegisterModel>(context);
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
@@ -149,19 +109,19 @@ class RegistButton extends StatelessWidget {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
-                        SnackBar(content: Text('Regist Success')),
+                        SnackBar(content: Text('회원가입 완료')),
                       );
-                    Navigator.pop(context);
+                    Navigator.pop(context, '/index');
                   } else {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
-                        SnackBar(content: Text('Regist Fail')),
+                        SnackBar(content: Text('회원가입 실패')),
                       );
                   }
                 });
               },
-        child: Text('Regist'),
+        child: Text('회원가입'),
       ),
     );
   }
