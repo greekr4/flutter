@@ -9,7 +9,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => RegisterModel(),
+      create: (_) => LoginModel(),
       child: Scaffold(
         appBar: AppBar(
           title: Text('인건비관리'),
