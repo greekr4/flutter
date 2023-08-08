@@ -49,6 +49,30 @@ class MainScreen extends StatelessWidget {
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10.0),
                           bottomRight: Radius.circular(10.0))),
+                ),
+                ListTile(
+                  leading: Icon(Icons.home),
+                  iconColor: Colors.blueAccent,
+                  focusColor: Colors.blueAccent,
+                  title: Text('홈'),
+                  trailing: Icon(Icons.navigate_next),
+                  onTap: () => {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.abc),
+                  iconColor: Colors.blueAccent,
+                  focusColor: Colors.blueAccent,
+                  title: Text('메뉴1'),
+                  trailing: Icon(Icons.navigate_next),
+                  onTap: () => {},
+                ),
+                ListTile(
+                  leading: Icon(Icons.abc),
+                  iconColor: Colors.blueAccent,
+                  focusColor: Colors.blueAccent,
+                  title: Text('메뉴2'),
+                  trailing: Icon(Icons.navigate_next),
+                  onTap: () => {},
                 )
               ]),
             ),
