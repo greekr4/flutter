@@ -41,4 +41,13 @@ class PaylogProvider with ChangeNotifier {
     });
     notifyListeners();
   }
+
+  Future<void> InsertPaylog() async {
+    paylogsReference.add({
+      "name": "zz",
+      "payment": 1000,
+      "time": "15:00~16:00",
+      "expdd": "20230811"
+    });
+  }
 }

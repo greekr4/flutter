@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:intl/intl.dart';
 import 'package:pay_master/models/model_paylog_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class MainScreen extends StatelessWidget {
   Future<String> getEmail() async {
@@ -103,6 +105,11 @@ class _ekffur extends State<TableCalendarScreen> {
 
   String expdd = "";
   String lastexpdd = "";
+  String insertexpdd = "";
+
+  String insert_name = "";
+  String insert_time = "";
+  int insert_payment = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +145,8 @@ class _ekffur extends State<TableCalendarScreen> {
               this.selectedDay = selectedDay;
               this.focusedDay = focusedDay;
               this.expdd = DateFormat('yyyyMMdd').format(selectedDay);
+              this.insertexpdd =
+                  DateFormat('yyyy년 MM월 dd일').format(selectedDay);
             });
           },
           selectedDayPredicate: (DateTime day) {
@@ -145,13 +154,77 @@ class _ekffur extends State<TableCalendarScreen> {
             return isSameDay(selectedDay, day);
           },
         ),
+        // Padding(
+        //     padding: EdgeInsets.all(10),
+        //     child: Divider(
+        //       thickness: 1,
+        //       color: Colors.indigo,
+        //     )),
+        ListTile(
+            trailing: IconButton(
+          icon: Icon(
+            Icons.add_box_rounded,
+            size: 40,
+            color: Colors.blueAccent,
+          ),
+          onPressed: () {
+            // paylogProvider.InsertPaylog();
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Center(
+                    child: Text('추가하기'),
+                  ),
+                  content: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Text(insertexpdd),
+                        ),
+                        TextField(
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            labelText: '이름',
+                          ),
+                        ),
+                        TextField(
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            labelText: '시간',
+                          ),
+                        ),
+                        TextField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: '금액',
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        // Close the dialog
+                      },
+                      child: Text('submit'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+        )),
         Expanded(
           child: FutureBuilder(
             future: _fetchPaylogsForSelectedDay(paylogProvider),
             builder: (context, snapshot) {
               //
               // print(paylogProvider.paylogs);
-              print(expdd);
+              // print(paylogProvider.paylogs[0].id);
+              // print(expdd);
               if (paylogProvider.paylogs.length == 0) {
                 return Center(
                   child: Text('데이터 없음'),
@@ -160,17 +233,50 @@ class _ekffur extends State<TableCalendarScreen> {
                 return ListView.builder(
                   itemCount: paylogProvider.paylogs.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: Icon(Icons.money_sharp),
-                      iconColor: Colors.blueAccent,
-                      trailing: Icon(Icons.delete),
-                      title: Text(paylogProvider.paylogs[index].name),
-                      subtitle: Text('시간 : ' +
-                          paylogProvider.paylogs[index].time +
-                          '\n금액 : ' +
-                          NumberFormat.currency(locale: 'ko_KR', symbol: '')
-                              .format(paylogProvider.paylogs[index].payment)
-                              .toString()),
+                    return Slidable(
+                      // Specify a key if the Slidable is dismissible.
+                      key: const ValueKey(0),
+
+                      // The start action pane is the one at the left or the top side.
+
+                      // The end action pane is the one at the right or the bottom side.
+                      endActionPane: ActionPane(
+                        motion: ScrollMotion(),
+                        children: [
+                          SlidableAction(
+                            // An action can be bigger than the others.
+                            onPressed: (context) {},
+                            backgroundColor: Color(0xFF7BC043),
+                            foregroundColor: Colors.white,
+                            icon: Icons.edit,
+                            label: '수정',
+                          ),
+                          SlidableAction(
+                            onPressed: (context) {},
+                            backgroundColor: Color(0xFFFE4A49),
+                            foregroundColor: Colors.white,
+                            icon: Icons.delete,
+                            label: '삭제',
+                          ),
+                        ],
+                      ),
+
+                      // The child of the Slidable is what the user sees when the
+                      // component is not dragged.
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.face,
+                          size: 45,
+                        ),
+                        iconColor: Colors.blueAccent,
+                        title: Text(paylogProvider.paylogs[index].name),
+                        subtitle: Text('시간 : ' +
+                            paylogProvider.paylogs[index].time +
+                            '\n금액 : ' +
+                            NumberFormat.currency(locale: 'ko_KR', symbol: '')
+                                .format(paylogProvider.paylogs[index].payment)
+                                .toString()),
+                      ),
                     );
                   },
                 );
@@ -192,3 +298,24 @@ class _ekffur extends State<TableCalendarScreen> {
     }
   }
 }
+
+
+
+
+
+
+// ListTile(
+//                       leading: Icon(Icons.money_sharp),
+//                       iconColor: Colors.blueAccent,
+//                       trailing: IconButton(
+//                         icon: Icon(Icons.delete),
+//                         onPressed: () {},
+//                       ),
+//                       title: Text(paylogProvider.paylogs[index].name),
+//                       subtitle: Text('시간 : ' +
+//                           paylogProvider.paylogs[index].time +
+//                           '\n금액 : ' +
+//                           NumberFormat.currency(locale: 'ko_KR', symbol: '')
+//                               .format(paylogProvider.paylogs[index].payment)
+//                               .toString()),
+//                     );
