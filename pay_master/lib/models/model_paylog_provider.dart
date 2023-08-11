@@ -42,12 +42,9 @@ class PaylogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> InsertPaylog() async {
-    paylogsReference.add({
-      "name": "zz",
-      "payment": 1000,
-      "time": "15:00~16:00",
-      "expdd": "20230811"
-    });
+  Future<void> InsertPaylog(
+      String name, int payment, String time, String expdd) async {
+    paylogsReference
+        .add({"name": name, "payment": payment, "time": time, "expdd": expdd});
   }
 }

@@ -1,12 +1,24 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:pay_master/models/model_paylog_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+
+TimeOfDay SinitialTime = TimeOfDay(hour: 8, minute: 00);
+TimeOfDay EinitialTime = TimeOfDay.now();
+String insertexpdd = "";
+String insert_name = "";
+String insert_stime = "";
+String insert_etime = "";
+String insert_time = "";
+int insert_payment = 0;
 
 class MainScreen extends StatelessWidget {
   Future<String> getEmail() async {
@@ -105,11 +117,6 @@ class _ekffur extends State<TableCalendarScreen> {
 
   String expdd = "";
   String lastexpdd = "";
-  String insertexpdd = "";
-
-  String insert_name = "";
-  String insert_time = "";
-  int insert_payment = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +152,7 @@ class _ekffur extends State<TableCalendarScreen> {
               this.selectedDay = selectedDay;
               this.focusedDay = focusedDay;
               this.expdd = DateFormat('yyyyMMdd').format(selectedDay);
-              this.insertexpdd =
-                  DateFormat('yyyy년 MM월 dd일').format(selectedDay);
+              insertexpdd = DateFormat('yyyy년 MM월 dd일').format(selectedDay);
             });
           },
           selectedDayPredicate: (DateTime day) {
@@ -168,6 +174,11 @@ class _ekffur extends State<TableCalendarScreen> {
             color: Colors.blueAccent,
           ),
           onPressed: () {
+            insert_name = "";
+            insert_payment = 0;
+            insert_time = "";
+            insert_stime = "";
+            insert_etime = "";
             // paylogProvider.InsertPaylog();
             showDialog(
               context: context,
@@ -182,32 +193,112 @@ class _ekffur extends State<TableCalendarScreen> {
                         Center(
                           child: Text(insertexpdd),
                         ),
-                        TextField(
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            labelText: '이름',
-                          ),
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+                            child: TextField(
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                labelText: '이름',
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(
+                                      width: 1, color: Colors.redAccent),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(
+                                      width: 1, color: Colors.blueAccent),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                insert_name = value;
+                              },
+                            )),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+                          child: StimetextChanger(),
                         ),
-                        TextField(
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            labelText: '시간',
-                          ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+                          child: EtimetextChanger(),
                         ),
-                        TextField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: '금액',
-                          ),
-                        )
+                        Padding(
+                            padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: <TextInputFormatter>[
+                                FilteringTextInputFormatter
+                                    .digitsOnly // 숫자만 입력할 수 있도록 제한합니다.
+                              ],
+                              decoration: InputDecoration(
+                                labelText: '금액',
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(
+                                      width: 1, color: Colors.redAccent),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                  borderSide: BorderSide(
+                                      width: 1, color: Colors.blueAccent),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                insert_payment = int.parse(value);
+                              },
+                            )),
                       ],
                     ),
                   ),
                   actions: [
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        // Close the dialog
+                        String insert_expdd =
+                            DateFormat('yyyyMMdd').format(selectedDay);
+                        String insert_time =
+                            insert_stime + " ~ " + insert_etime;
+                        print('날짜 : $insert_expdd');
+                        print('이름 : $insert_name');
+                        print('시간 : $insert_time');
+                        print('금액 : $insert_payment');
+
+                        // if (insert_expdd != "") {
+                        //   Navigator.of(context).pop();
+                        //   return;
+                        // }
+                        // if (insert_name != "") {
+                        //   Navigator.of(context).pop();
+                        //   return;
+                        // }
+                        // if (insert_stime != "") {
+                        //   Navigator.of(context).pop();
+                        //   return;
+                        // }
+                        // if (insert_etime != "") {
+                        //   Navigator.of(context).pop();
+                        //   return;
+                        // }
+                        // if (insert_payment == 0) {
+                        //   Navigator.of(context).pop();
+                        //   return;
+                        // }
+
+                        paylogProvider.InsertPaylog(insert_name, insert_payment,
+                            insert_time, insert_expdd);
+                        print('성공');
+                        Navigator.of(context).pop(); // Close the dialog
                       },
                       child: Text('submit'),
                     ),
@@ -299,23 +390,116 @@ class _ekffur extends State<TableCalendarScreen> {
   }
 }
 
+class StimetextChanger extends StatefulWidget {
+  @override
+  StimeTextState createState() => StimeTextState();
+}
 
+class StimeTextState extends State<StimetextChanger> {
+  TextEditingController _controller = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final TimeOfDay? timeOfDay = await showTimePicker(
+          context: context,
+          //initialTime: TimeOfDay(hour: 8, minute: 0),
+          initialTime: SinitialTime,
+        );
+        if (timeOfDay != null) {
+          setState(() {
+            SinitialTime = timeOfDay;
+            String formatStime = SinitialTime.hour.toString().padLeft(2, '0') +
+                ":" +
+                SinitialTime.minute.toString().padLeft(2, '0');
+            _controller.text = formatStime;
+            insert_stime = _controller.text;
+          });
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: true,
+        child: TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            labelText: '시작 시간',
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderSide: BorderSide(width: 1, color: Colors.redAccent),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
+class EtimetextChanger extends StatefulWidget {
+  @override
+  EtimeTextState createState() => EtimeTextState();
+}
 
-// ListTile(
-//                       leading: Icon(Icons.money_sharp),
-//                       iconColor: Colors.blueAccent,
-//                       trailing: IconButton(
-//                         icon: Icon(Icons.delete),
-//                         onPressed: () {},
-//                       ),
-//                       title: Text(paylogProvider.paylogs[index].name),
-//                       subtitle: Text('시간 : ' +
-//                           paylogProvider.paylogs[index].time +
-//                           '\n금액 : ' +
-//                           NumberFormat.currency(locale: 'ko_KR', symbol: '')
-//                               .format(paylogProvider.paylogs[index].payment)
-//                               .toString()),
-//                     );
+class EtimeTextState extends State<EtimetextChanger> {
+  TextEditingController _Econtroller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () async {
+        final TimeOfDay? timeOfDay = await showTimePicker(
+          context: context,
+          //initialTime: TimeOfDay(hour: 8, minute: 0),
+          initialTime: EinitialTime,
+        );
+        if (timeOfDay != null) {
+          setState(() {
+            EinitialTime = timeOfDay;
+            String formatEtime = EinitialTime.hour.toString().padLeft(2, '0') +
+                ":" +
+                EinitialTime.minute.toString().padLeft(2, '0');
+            _Econtroller.text = formatEtime;
+            insert_etime = _Econtroller.text;
+          });
+        }
+      },
+      child: AbsorbPointer(
+        absorbing: true,
+        child: TextField(
+          controller: _Econtroller,
+          decoration: InputDecoration(
+            labelText: '시작 시간',
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderSide: BorderSide(width: 1, color: Colors.redAccent),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              borderSide: BorderSide(width: 1, color: Colors.blueAccent),
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
