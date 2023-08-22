@@ -22,15 +22,6 @@ class PaylogProvider with ChangeNotifier {
   }
 
   Future<void> SelectPaylogs(String expdd) async {
-    // paylogs = [];
-
-    // // QuerySnapshot querySnapshot =
-    // //     await paylogsReference.where('expdd', isEqualTo: expdd).get();
-
-    // // paylogs = querySnapshot.docs.map((DocumentSnapshot document) {
-    // //   return Paylog.fromSnapshot(document);
-    // // }).toList();
-
     paylogs = await paylogsReference
         .where('expdd', isEqualTo: expdd)
         .get()
@@ -46,5 +37,15 @@ class PaylogProvider with ChangeNotifier {
       String name, int payment, String time, String expdd) async {
     paylogsReference
         .add({"name": name, "payment": payment, "time": time, "expdd": expdd});
+  }
+
+  Future<void> DeletePaylog(String documentId) async {
+    await paylogsReference.doc(documentId).delete();
+  }
+
+  Future<void> EditPaylog(String documentId, String name, int payment,
+      String time, String expdd) async {
+    await paylogsReference.doc(documentId).update(
+        {"name": name, "payment": payment, "time": time, "expdd": expdd});
   }
 }
