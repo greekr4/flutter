@@ -1,13 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pay_master/models/model_auth.dart';
 import 'package:pay_master/models/model_login.dart';
 import 'package:pay_master/models/model_register.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget {
+  Future<void> isLogin(BuildContext context) async {
+    final secureStorage = FlutterSecureStorage();
+    final email = await secureStorage.read(key: "email");
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (email != null) {
+      print('자동로그인상태');
+      prefs.setString('email', email);
+      Navigator.pushReplacementNamed(context, '/main');
+    } else {
+      print('자동로그인아님');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    isLogin(context);
     return ChangeNotifierProvider(
       create: (_) => LoginModel(),
       child: Scaffold(
@@ -71,6 +87,7 @@ class LoginButton extends StatelessWidget {
     final authClient =
         Provider.of<FirebaseAuthProvider>(context, listen: false);
     final login = Provider.of<LoginModel>(context, listen: false);
+    final secureStorage = FlutterSecureStorage(); // SecureStorage 인스턴스 생성
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
       height: MediaQuery.of(context).size.height * 0.05,
@@ -81,24 +98,9 @@ class LoginButton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          await authClient
-              .loginWithEmail(login.email, login.password)
-              .then((registerStatus) {
-            if (registerStatus == AuthStatus.loginSuccess) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(content: Text('로그인 완료')),
-                );
-              Navigator.pushReplacementNamed(context, '/main');
-            } else {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                  SnackBar(content: Text('로그인 실패')),
-                );
-            }
-          });
+          //로그인
+          Gologin(
+              authClient, secureStorage, login.email, login.password, context);
         },
         child: Text('로그인'),
       ),
@@ -117,4 +119,27 @@ class GoRegister extends StatelessWidget {
           '관리자 계정 생성',
         ));
   }
+}
+
+Future<void> Gologin(
+    authClient, secureStorage, email, password, BuildContext context) async {
+  await authClient.loginWithEmail(email, password).then((registerStatus) async {
+    if (registerStatus == AuthStatus.loginSuccess) {
+      await secureStorage.write(key: 'islogin', value: "on");
+      await secureStorage.write(key: 'email', value: email);
+      await secureStorage.write(key: 'password', value: password);
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text('로그인 완료')),
+        );
+      Navigator.pushReplacementNamed(context, '/main');
+    } else {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(content: Text('로그인 실패')),
+        );
+    }
+  });
 }

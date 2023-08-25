@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:pay_master/models/model_auth.dart';
 import 'package:pay_master/models/model_paylog_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,6 +22,12 @@ String insert_etime = "";
 String insert_time = "";
 int insert_payment = 0;
 
+String edit_name = "";
+String edit_stime = "";
+String edit_etime = "";
+String edit_time = "";
+int edit_payment = 0;
+
 class MainScreen extends StatelessWidget {
   Future<String> getEmail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,6 +36,8 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authClient =
+        Provider.of<FirebaseAuthProvider>(context, listen: false);
     return FutureBuilder(
       future: getEmail(),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -86,9 +96,17 @@ class MainScreen extends StatelessWidget {
                   leading: Icon(Icons.abc),
                   iconColor: Colors.blueAccent,
                   focusColor: Colors.blueAccent,
-                  title: Text('메뉴2'),
+                  title: Text('로그아웃'),
                   trailing: Icon(Icons.navigate_next),
-                  onTap: () => {},
+                  onTap: () => {
+                    authClient.logout().then(
+                      (res) {
+                        final secureStorage = FlutterSecureStorage();
+                        secureStorage.deleteAll();
+                        Navigator.pushReplacementNamed(context, '/index');
+                      },
+                    )
+                  },
                 )
               ]),
             ),
@@ -303,6 +321,11 @@ class _ekffur extends State<TableCalendarScreen> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
+                              edit_name = paylogProvider.paylogs[index].name;
+                              edit_time = paylogProvider.paylogs[index].time;
+                              edit_payment =
+                                  paylogProvider.paylogs[index].payment;
+
                               TextEditingController _editNameCtrl =
                                   TextEditingController(
                                       text: paylogProvider.paylogs[index].name);
@@ -372,7 +395,7 @@ class _ekffur extends State<TableCalendarScreen> {
                                                   ),
                                                 ),
                                                 onChanged: (value) {
-                                                  insert_name = value;
+                                                  edit_name = value;
                                                 },
                                               )),
                                           Padding(
@@ -431,7 +454,7 @@ class _ekffur extends State<TableCalendarScreen> {
                                                   ),
                                                 ),
                                                 onChanged: (value) {
-                                                  insert_payment =
+                                                  edit_payment =
                                                       int.parse(value);
                                                 },
                                               )),
@@ -447,22 +470,21 @@ class _ekffur extends State<TableCalendarScreen> {
                                           child: Text('취소')),
                                       TextButton(
                                         onPressed: () {
-                                          String insert_expdd =
+                                          String edit_expdd =
                                               DateFormat('yyyyMMdd')
                                                   .format(selectedDay);
-                                          String insert_time = insert_stime +
-                                              " ~ " +
-                                              insert_etime;
-                                          print('날짜 : $insert_expdd');
-                                          print('이름 : $insert_name');
-                                          print('시간 : $insert_time');
-                                          print('금액 : $insert_payment');
+                                          String edit_time =
+                                              edit_stime + " ~ " + edit_etime;
+                                          print('날짜 : $edit_expdd');
+                                          print('이름 : $edit_name');
+                                          print('시간 : $edit_time');
+                                          print('금액 : $edit_payment');
                                           paylogProvider.EditPaylog(
                                               paylogProvider.paylogs[index].id,
-                                              insert_name,
-                                              insert_payment,
-                                              insert_time,
-                                              insert_expdd);
+                                              edit_name,
+                                              edit_payment,
+                                              edit_time,
+                                              edit_expdd);
                                           print('성공');
                                           Navigator.of(context)
                                               .pop(); // Close the dialog
@@ -669,7 +691,7 @@ class StimeTextState_Edit extends State<StimetextChanger_Edit> {
                 ":" +
                 SinitialTime.minute.toString().padLeft(2, '0');
             widget.controller.text = formatStime;
-            insert_stime = widget.controller.text;
+            edit_stime = widget.controller.text;
           });
         }
       },
@@ -723,7 +745,7 @@ class EtimeTextState_Edit extends State<EtimetextChanger_Edit> {
                 ":" +
                 EinitialTime.minute.toString().padLeft(2, '0');
             widget.controller.text = formatEtime;
-            insert_etime = widget.controller.text;
+            edit_etime = widget.controller.text;
           });
         }
       },
