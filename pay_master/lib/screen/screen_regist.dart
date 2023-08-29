@@ -1,19 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pay_master/models/model_auth.dart';
 import 'package:pay_master/models/model_register.dart';
 import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => RegisterModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('회원가입'),
+          title: const Text('회원가입'),
         ),
-        body: Column(children: [
+        body: const Column(children: [
           EmailInput(),
           PasswordInput(),
           PasswordComfirmInput(),
@@ -25,34 +26,38 @@ class RegisterScreen extends StatelessWidget {
 }
 
 class EmailInput extends StatelessWidget {
+  const EmailInput({super.key});
+
   @override
   Widget build(BuildContext context) {
     final register = Provider.of<RegisterModel>(context, listen: false);
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: TextField(
         onChanged: (email) {
           register.setEmail(email);
         },
         keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(labelText: '이메일', helperText: ''),
+        decoration: const InputDecoration(labelText: '이메일', helperText: ''),
       ),
     );
   }
 }
 
 class PasswordInput extends StatelessWidget {
+  const PasswordInput({super.key});
+
   @override
   Widget build(BuildContext context) {
     final register = Provider.of<RegisterModel>(context, listen: false);
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: TextField(
         onChanged: (password) {
           register.setPassword(password);
         },
         obscureText: true,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           labelText: '비밀번호',
           helperText: '',
         ),
@@ -62,11 +67,13 @@ class PasswordInput extends StatelessWidget {
 }
 
 class PasswordComfirmInput extends StatelessWidget {
+  const PasswordComfirmInput({super.key});
+
   @override
   Widget build(BuildContext context) {
     final register = Provider.of<RegisterModel>(context);
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       child: TextField(
         onChanged: (password) {
           register.setPasswordConfirm(password);
@@ -85,12 +92,14 @@ class PasswordComfirmInput extends StatelessWidget {
 }
 
 class RegistButton extends StatelessWidget {
+  const RegistButton({super.key});
+
   @override
   Widget build(BuildContext context) {
     final authClient =
         Provider.of<FirebaseAuthProvider>(context, listen: false);
     final register = Provider.of<RegisterModel>(context);
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width * 0.7,
       height: MediaQuery.of(context).size.height * 0.05,
       child: ElevatedButton(
@@ -109,19 +118,19 @@ class RegistButton extends StatelessWidget {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
-                        SnackBar(content: Text('회원가입 완료')),
+                        const SnackBar(content: Text('회원가입 완료')),
                       );
                     Navigator.pop(context, '/index');
                   } else {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
-                        SnackBar(content: Text('회원가입 실패')),
+                        const SnackBar(content: Text('회원가입 실패')),
                       );
                   }
                 });
               },
-        child: Text('회원가입'),
+        child: const Text('회원가입'),
       ),
     );
   }

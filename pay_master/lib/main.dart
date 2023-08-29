@@ -33,9 +33,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: '인건비관리',
         routes: {
-          '/index': (context) => LoginScreen(),
-          '/register': (context) => RegisterScreen(),
-          '/main': (context) => MainScreen(),
+          '/index': (context) => const LoginScreen(),
+          '/register': (context) => const RegisterScreen(),
+          '/main': (context) => const MainScreen(),
           // '/splash': (context) => SplashScreen(),
           // '/register': (context) => RegisterScreen(),
         },

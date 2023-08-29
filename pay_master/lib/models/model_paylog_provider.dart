@@ -34,9 +34,14 @@ class PaylogProvider with ChangeNotifier {
   }
 
   Future<void> InsertPaylog(
-      String name, int payment, String time, String expdd) async {
-    paylogsReference
-        .add({"name": name, "payment": payment, "time": time, "expdd": expdd});
+      String name, int payment, String time, String expdd, String etc) async {
+    paylogsReference.add({
+      "name": name,
+      "payment": payment,
+      "time": time,
+      "expdd": expdd,
+      "etc": etc
+    });
   }
 
   Future<void> DeletePaylog(String documentId) async {
@@ -44,8 +49,13 @@ class PaylogProvider with ChangeNotifier {
   }
 
   Future<void> EditPaylog(String documentId, String name, int payment,
-      String time, String expdd) async {
-    await paylogsReference.doc(documentId).update(
-        {"name": name, "payment": payment, "time": time, "expdd": expdd});
+      String time, String expdd, String etc) async {
+    await paylogsReference.doc(documentId).update({
+      "name": name,
+      "payment": payment,
+      "time": time,
+      "expdd": expdd,
+      "etc": etc
+    });
   }
 }

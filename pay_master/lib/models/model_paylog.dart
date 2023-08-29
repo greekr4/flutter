@@ -6,6 +6,7 @@ class Paylog {
   late String name;
   late String time;
   late int payment;
+  late String etc;
 
   Paylog({
     required this.id,
@@ -13,6 +14,7 @@ class Paylog {
     required this.name,
     required this.time,
     required this.payment,
+    required this.etc,
   });
 
   Paylog.fromSnapshot(DocumentSnapshot snapshot) {
@@ -22,6 +24,7 @@ class Paylog {
     name = data['name'];
     time = data['time'];
     payment = data['payment'];
+    etc = data['etc'];
   }
 
   // Paylog.fromMap(Map<String, dynamic> data) {
